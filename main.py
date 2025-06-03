@@ -1,54 +1,59 @@
-import tkinter as tk         # Biblioteca para interface gráfica
-import math                  # Biblioteca com funções matemáticas
+import tkinter as tk
+import math
 
-# Função que será chamada quando um botão comum (número ou operador) for clicado
 def clicar_botao(valor):
-    texto_atual = campo_texto.get()         # Pega o que está escrito na tela
-    campo_texto.delete(0, tk.END)           # Apaga o conteúdo atual
-    campo_texto.insert(0, texto_atual + valor)  # Insere o novo valor no final
+    texto_atual = campo_texto.get()
+    campo_texto.delete(0, tk.END)
+    campo_texto.insert(0, texto_atual + valor)
 
-# Função que limpa a tela (ou botão "C")
 def limpar_tela():
-    campo_texto.delete(0, tk.END)           # Apaga todo o conteúdo da entrada
+    campo_texto.delete(0, tk.END)
 
-# Função que calcula a expressão digitada e mostra o resultado
 def calcular_resultado():
     try:
-        expressao = campo_texto.get()       # Pega a expressão matemática digitada
-
+        expressao = campo_texto.get()
         # 'eval' avalia a expressão, e permite calcular somente funções do módulo "math"
         resultado = str(eval(expressao, {"__builtins__": None}, math.__dict__))
-        campo_texto.delete(0, tk.END)       # Limpa a tela
-        campo_texto.insert(0, resultado)    # Mostra o resultado
+        campo_texto.delete(0, tk.END)
+        campo_texto.insert(0, resultado)
     except:
-        campo_texto.delete(0, tk.END)       # Limpa a tela
-        campo_texto.insert(0, "Erro")       # Mostra "Erro" se algo deu errado
+        campo_texto.delete(0, tk.END)
+        campo_texto.insert(0, "Erro")
 
-# Função que trata alguns botões especiais como "=", "C", "sin", "sqrt", entre outros
 def tratar_especial(valor):
     if valor == 'C':
-        limpar_tela()                        # Limpa tudo se for "C"
+        limpar_tela()
     elif valor == '=':
-        calcular_resultado()                 # Calcula se for "="
+        calcular_resultado()
     elif valor == '^':
-        clicar_botao('**')                   # Insere "**" para potência
+        clicar_botao('**')
     elif valor in ['sin', 'cos', 'tan', 'sqrt', 'log', 'exp']:
-        clicar_botao(f'math.{valor}(')       # Insere a função matemática, ex: math.sin(
+        clicar_botao(f'math.{valor}(')
 
 # Cria a janela principal
 janela = tk.Tk()
-janela.title("Calculadora Científica")      # Título da janela
-janela.geometry("400x500")                  # Tamanho da janela (largura x altura)
+janela.title("Calculadora Científica")
+janela.geometry("400x500")
+janela.configure(bg='#303030') # Cor de fundo da janela principal para um tema escuro
 
-# Cria o campo de texto onde aparecerão os números e os resultados
-campo_texto = tk.Entry(janela, font=("Arial", 20), bd=10, relief=tk.RIDGE, justify="right")
-campo_texto.pack(fill=tk.BOTH, ipadx=8, ipady=15, padx=10, pady=10)
+# Cria o campo de texto (display)
+# Alterações aqui: cor de fundo, cor da fonte e borda
+campo_texto = tk.Entry(
+    janela,
+    font=("Arial", 24), # Aumentei um pouco a fonte para melhor visualização
+    bd=8, # Borda mais visível para o efeito de profundidade
+    relief=tk.RIDGE, # Efeito de borda "moderna" que parece mais profunda
+    justify="right",
+    bg='#414242', # Cor de fundo do display
+    fg='white' # Cor do texto no display
+)
+campo_texto.pack(fill=tk.BOTH, expand=True, ipadx=10, ipady=20, padx=10, pady=10) # Ajustei o padding interno e externo
 
 # Cria um quadro onde os botões vão ser posicionados
-quadro_botoes = tk.Frame(janela)
-quadro_botoes.pack()
+quadro_botoes = tk.Frame(janela, bg='#353535') # Cor de fundo para o quadro dos botões
+quadro_botoes.pack(fill=tk.BOTH, expand=True, padx=5, pady=5) # Ajustei o padding do quadro
 
-# Define os rótulos dos botões em linhas, como se fosse uma tabela
+# Define os rótulos dos botões em linhas
 botoes = [
     ('7', '8', '9', '/'),
     ('4', '5', '6', '*'),
@@ -61,20 +66,25 @@ botoes = [
 
 # Cria os botões com base na lista acima
 for linha in botoes:
-    quadro_linha = tk.Frame(quadro_botoes)      # Cria uma linha de botões
-    quadro_linha.pack(expand=True, fill='both') # Expande a linha horizontalmente
+    quadro_linha = tk.Frame(quadro_botoes, bg='#353535') # Mantém a cor de fundo para a linha
+    quadro_linha.pack(expand=True, fill='both')
     for texto in linha:
-        if texto:  # Só cria botão se tiver texto (evita espaços em branco)
+        if texto:
+            # Alterações aqui: cor de fundo do botão, cor da fonte, borda e relevo
             botao = tk.Button(
                 quadro_linha,
-                text=texto,                     # Texto que aparece no botão
-                font=("Arial", 18),
-                relief=tk.RAISED,
+                text=texto,
+                font=("Arial", 18, "bold"), # Adicionei bold para o texto do botão
+                bg='#606060', # Cor de fundo dos botões (um cinza mais claro)
+                fg='white', # Cor do texto dos botões
+                relief=tk.FLAT, # Estilo de botão "flat" para um visual mais moderno
+                bd=1, # Pequena borda para separação
                 command=lambda val=texto: tratar_especial(val)
                 if val in ['=', 'C', '^', 'sin', 'cos', 'tan', 'sqrt', 'log', 'exp']
-                else clicar_botao(val)          # Define o que acontece ao clicar
+                else clicar_botao(val)
             )
-            botao.pack(side='left', expand=True, fill='both')  # Adiciona o botão à linha
+            # Adicionado padding interno e externo para a separação dos botões
+            botao.pack(side='left', expand=True, fill='both', padx=2, pady=2)
 
 # Mantém a janela aberta esperando interação do usuário
 janela.mainloop()
