@@ -5,8 +5,7 @@ def clicar_botao(valor):
     texto_atual = campo_texto.get()
     campo_texto.delete(0, tk.END)
     campo_texto.insert(0, texto_atual + valor)
-    # --- NOVO: Rola o visor para o final da expressão ---
-    campo_texto.xview_moveto(1.0) # Move a visualização para o final (direita) do texto
+    campo_texto.xview_moveto(1.0)
 
 def limpar_tela():
     campo_texto.delete(0, tk.END)
@@ -32,7 +31,6 @@ def calcular_resultado():
         resultado = str(eval(expressao, safe_dict))
         campo_texto.delete(0, tk.END)
         campo_texto.insert(0, resultado)
-        # --- NOVO: Rola o visor para o final do resultado também ---
         campo_texto.xview_moveto(1.0)
     except Exception as e:
         campo_texto.delete(0, tk.END)
@@ -84,7 +82,7 @@ botoes = [
 
 cores_especiais = {
     'C': {'bg': '#FFA500', 'fg': 'white'},
-    '%': {'bg': '#606060', 'fg': 'white'}, # Mantido cinza para "%" como na imagem
+    '%': {'bg': '#FFA500', 'fg': 'white'},
     '/': {'bg': '#FFA500', 'fg': 'white'},
     '*': {'bg': '#FFA500', 'fg': 'white'},
     '-': {'bg': '#FFA500', 'fg': 'white'},
@@ -120,7 +118,6 @@ for linha in botoes:
             tk.Frame(quadro_linha, bg='#353535').pack(side='left', expand=True, fill='both', padx=2, pady=2)
 
 
-# --- Criação do botão '0' separado para preencher a última linha ---
 quadro_zero = tk.Frame(quadro_botoes, bg='#353535')
 quadro_zero.pack(expand=True, fill='both', padx=2, pady=2)
 
